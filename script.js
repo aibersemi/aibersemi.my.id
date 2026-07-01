@@ -1,5 +1,5 @@
 /**
- * AiBersemi — Professional IT Portfolio
+ * AiBersemi — IT Systems, Automation & Software Portfolio
  * JavaScript — Animations, Typing Effect, Particle Background, Dynamic Content
  *
  * All DOM manipulation uses document.createElement() / textContent
@@ -13,26 +13,25 @@
        CONFIGURATION & DATA
        ========================================================== */
 
-    /**
-     * Skills data — based on AiBersemi's GitHub profile and Open VSX activity.
-     * TODO: Update this list as new skills are acquired.
-     */
     const SKILLS = [
         { name: 'JavaScript', icon: '⚡' },
         { name: 'Python', icon: '🐍' },
         { name: 'HTML', icon: '🌐' },
         { name: 'CSS', icon: '🎨' },
         { name: 'Web Development', icon: '💻' },
-        { name: 'VS Code Extensions', icon: '🧩' },
-        { name: 'Open VSX Publishing', icon: '📦' },
-        { name: 'GitHub', icon: '🐙' },
-        { name: 'Automation', icon: '⚙️' },
+        { name: 'Backend Development', icon: '🔗' },
         { name: 'API Integration', icon: '🔗' },
-        { name: 'AI Tools', icon: '🤖' },
-        { name: 'Developer Tools', icon: '🛠️' },
-        { name: 'DevOps', icon: '🚀' },
-        { name: 'Linux', icon: '🐧' },
+        { name: 'Automation', icon: '⚙️' },
         { name: 'Workflow Optimization', icon: '📊' },
+        { name: 'AI Tools', icon: '🤖' },
+        { name: 'AI Workflow Integration', icon: '✨' },
+        { name: 'GitHub', icon: '🐙' },
+        { name: 'Linux', icon: '🐧' },
+        { name: 'Docker', icon: '📦' },
+        { name: 'VPS Management', icon: '🖥️' },
+        { name: 'Deployment', icon: '🚀' },
+        { name: 'DevOps Workflow', icon: '🛠️' },
+        { name: 'Developer Tools', icon: '🧩' },
     ];
 
     const PROFILE_CONFIG = {
@@ -44,8 +43,8 @@
     };
 
     const API_CACHE_KEYS = {
-        projects: 'aibersemi.github-projects.v1',
-        extensions: 'aibersemi.open-vsx-extensions.v1',
+        projects: 'aibersemi.github-projects.v2',
+        extensions: 'aibersemi.open-vsx-extensions.v2',
     };
 
     const LANGUAGE_COLORS = {
@@ -63,18 +62,73 @@
         Java: '#b07219',
     };
 
+    const PROJECT_DISPLAY_OVERRIDES = {
+        'manufacturing-information-system': {
+            name: 'Manufacturing Information System',
+            description:
+                'A practical information system for managing production, inventory, and operational workflows.',
+        },
+        'open-quota-antigravity': {
+            name: 'Quota Monitoring Extension',
+            description:
+                'A status bar extension that provides a quick view of quota usage for a development environment.',
+        },
+        'aibersemi.my.id': {
+            name: 'AiBersemi Portfolio Website',
+            description:
+                'A static professional portfolio website built to present technical work, services, and public developer profiles.',
+        },
+        'git-auto-commit-ollama': {
+            name: 'AI-Assisted Git Commit Helper',
+            description:
+                'A shell-based workflow helper for generating structured Git commits with AI-assisted local tooling.',
+        },
+    };
+
+    const EXTENSION_DISPLAY_OVERRIDES = {
+        'open-quota-antigravity': {
+            name: 'Quota Monitoring Extension',
+            description:
+                'A lightweight editor extension that shows quota usage from the status bar for a development workflow.',
+        },
+    };
+
     /**
      * GitHub project data — sourced from the AiBersemi GitHub API.
      * Used as fallback when the API is unavailable.
      */
     const PROJECTS = [
         {
-            name: 'open-quota-antigravity',
+            name: 'Manufacturing Information System',
             description:
-                'A simple extension to monitor Google Antigravity IDE quota in real-time from the status bar.',
+                'A practical information system for managing production, inventory, and operational workflows.',
+            language: 'PHP',
+            languageColor: '#4f5d95',
+            url: 'https://github.com/aibersemi/manufacturing-information-system',
+        },
+        {
+            name: 'Quota Monitoring Extension',
+            description:
+                'A status bar extension that provides a quick view of quota usage for a development environment.',
             language: 'JavaScript',
             languageColor: '#f1e05a',
             url: 'https://github.com/aibersemi/open-quota-antigravity',
+        },
+        {
+            name: 'AiBersemi Portfolio Website',
+            description:
+                'A static professional portfolio website built to present technical work, services, and public developer profiles.',
+            language: 'HTML',
+            languageColor: '#e34c26',
+            url: 'https://github.com/aibersemi/aibersemi.my.id',
+        },
+        {
+            name: 'AI-Assisted Git Commit Helper',
+            description:
+                'A shell-based workflow helper for generating structured Git commits with AI-assisted local tooling.',
+            language: 'Shell',
+            languageColor: '#89e051',
+            url: 'https://github.com/aibersemi/git-auto-commit-ollama',
         },
     ];
 
@@ -84,10 +138,10 @@
      */
     const EXTENSIONS = [
         {
-            name: 'Open Quota Antigravity',
+            name: 'Quota Monitoring Extension',
             slug: 'open-quota-antigravity',
             description:
-                'Monitor Google Antigravity IDE quota in real-time from the status bar. Provides a quick visual indicator of remaining quota usage.',
+                'A lightweight editor extension that shows quota usage from the status bar for a development workflow.',
             version: '1.1.5',
             publisher: 'aibersemi',
             url: 'https://open-vsx.org/extension/aibersemi/open-quota-antigravity',
@@ -99,44 +153,44 @@
      */
     const SERVICES = [
         {
+            icon: '🧭',
+            title: 'IT Systems Implementation',
+            desc: 'Designing and implementing practical digital systems that support operational workflows and business processes.',
+        },
+        {
             icon: '🌐',
-            title: 'Web Development',
-            desc: 'Building clean, responsive, and performant web applications using modern standards and best practices.',
+            title: 'Web Application Development',
+            desc: 'Building responsive, maintainable web applications using modern web standards and clean implementation practices.',
         },
         {
             icon: '⚙️',
-            title: 'Automation Tools',
-            desc: 'Creating scripts and tools that automate repetitive IT tasks, improving efficiency and reducing manual effort.',
+            title: 'Automation & Workflow Optimization',
+            desc: 'Creating automation scripts and workflow tools that reduce repetitive tasks, improve speed, and minimize manual errors.',
         },
         {
-            icon: '🧩',
-            title: 'VS Code Extension Development',
-            desc: 'Designing and building extensions for VS Code and compatible editors, published through Open VSX.',
+            icon: '🔗',
+            title: 'Backend & API Integration',
+            desc: 'Developing backend logic, API connections, and system integrations that allow tools and platforms to work together.',
+        },
+        {
+            icon: '🚀',
+            title: 'Infrastructure & Deployment',
+            desc: 'Setting up Linux-based servers, VPS environments, Docker services, reverse proxy workflows, and deployment processes.',
         },
         {
             icon: '🤖',
             title: 'AI Workflow Integration',
-            desc: 'Integrating AI-powered tools into development workflows to enhance productivity and code quality.',
-        },
-        {
-            icon: '🔗',
-            title: 'Backend & API Development',
-            desc: 'Developing backend services and RESTful APIs that power web applications and integrations.',
+            desc: 'Applying AI-assisted tools to improve productivity, documentation, coding workflows, and operational decision support.',
         },
         {
             icon: '🛠️',
             title: 'Developer Tooling',
-            desc: 'Building command-line tools, utilities, and productivity aids for software development teams.',
-        },
-        {
-            icon: '🚀',
-            title: 'DevOps & Deployment',
-            desc: 'Setting up CI/CD pipelines, deployment workflows, and infrastructure automation for smooth delivery.',
+            desc: 'Building utilities, extensions, and productivity tools that support software development and technical operations.',
         },
         {
             icon: '🔍',
             title: 'Technical Problem Solving',
-            desc: 'Analyzing complex technical challenges and implementing practical, well-documented solutions.',
+            desc: 'Analyzing technical problems, identifying root causes, and implementing practical, well-documented solutions.',
         },
     ];
 
@@ -146,28 +200,28 @@
     const HIGHLIGHTS = [
         {
             icon: '🔧',
-            title: 'Practical Tool Builder',
-            desc: 'Builds practical tools for developers and IT workflows that solve real problems.',
+            title: 'Practical Systems Builder',
+            desc: 'Builds digital tools and systems that solve real operational and technical problems.',
         },
         {
             icon: '⚡',
-            title: 'Automation & Productivity',
-            desc: 'Focuses on automation and productivity to streamline development processes.',
+            title: 'Automation-Focused',
+            desc: 'Improves workflows through automation, integration, and structured process design.',
         },
         {
-            icon: '✨',
-            title: 'Clean Code Advocate',
-            desc: 'Creates clean, maintainable, and functional web interfaces and developer tools.',
+            icon: '🖥️',
+            title: 'Infrastructure-Aware',
+            desc: 'Understands server environments, deployment workflows, and maintainable service operations.',
         },
         {
-            icon: '🐙',
-            title: 'GitHub Workflow Expert',
-            desc: 'Works with GitHub-based development workflows including Actions, Issues, and CI/CD.',
+            icon: '🔗',
+            title: 'API & Integration Mindset',
+            desc: 'Connects systems through APIs and structured data flows to reduce fragmented work.',
         },
         {
-            icon: '📦',
-            title: 'Open VSX Publisher',
-            desc: 'Publishes developer tools and extensions through the Open VSX registry.',
+            icon: '📈',
+            title: 'Continuous Improvement',
+            desc: 'Learns, iterates, documents, and improves systems based on real usage.',
         },
     ];
 
@@ -175,12 +229,13 @@
      * Typing effect phrases for the hero subtitle.
      */
     const TYPING_PHRASES = [
-        'IT Professional',
+        'IT Systems Specialist',
         'Software Developer',
-        'Automation Enthusiast',
-        'Extension Developer',
-        'Open Source Contributor',
-        'Tool Builder',
+        'Automation Specialist',
+        'Web Development Practitioner',
+        'API Integration Builder',
+        'AI Workflow Implementer',
+        'DevOps & Deployment Practitioner',
     ];
 
 
@@ -499,7 +554,7 @@
                 })
             );
         } catch (err) {
-            // Cache lokal opsional; halaman tetap berjalan jika storage ditolak browser.
+            // Local cache is optional; the page still works if browser storage is blocked.
         }
     }
 
@@ -518,9 +573,14 @@
     }
 
     function normalizeGitHubRepo(repo) {
+        var display = PROJECT_DISPLAY_OVERRIDES[repo.name] || {};
+
         return {
-            name: repo.name,
-            description: repo.description || 'Public repository from the AiBersemi GitHub profile.',
+            name: display.name || repo.name,
+            description:
+                display.description ||
+                repo.description ||
+                'Public repository from the AiBersemi GitHub profile.',
             language: repo.language || 'Repository',
             languageColor: getLanguageColor(repo.language),
             url: repo.html_url,
@@ -547,10 +607,15 @@
     }
 
     function normalizeOpenVsxExtension(ext) {
+        var display = EXTENSION_DISPLAY_OVERRIDES[ext.name] || {};
+
         return {
-            name: ext.displayName || ext.name,
+            name: display.name || ext.displayName || ext.name,
             slug: ext.name,
-            description: ext.description || 'Published extension from the AiBersemi Open VSX namespace.',
+            description:
+                display.description ||
+                ext.description ||
+                'Published developer tool from the AiBersemi Open VSX namespace.',
             version: ext.version,
             publisher: ext.namespaceDisplayName || ext.namespace || PROFILE_CONFIG.openVsxNamespace,
             url: getOpenVsxExtensionUrl(ext.namespace || PROFILE_CONFIG.openVsxNamespace, ext.name),
@@ -601,7 +666,7 @@
                 renderProjects(liveProjects);
             }
         } catch (err) {
-            console.warn('Gagal mengambil data GitHub Projects:', err);
+            console.warn('Failed to fetch GitHub projects:', err);
         }
     }
 
@@ -620,7 +685,7 @@
                 renderExtensions(liveExtensions);
             }
         } catch (err) {
-            console.warn('Gagal mengambil data Open VSX Extensions:', err);
+            console.warn('Failed to fetch Open VSX extensions:', err);
         }
     }
 
