@@ -39,5 +39,5 @@ FTP_URL=$(grep -Po '^FTP_URL=\K.*' .env)
 curl -T script.js -u "$FTP_USER:$FTP_PASSWORD" "$FTP_URL"
 
 # Upload multiple files at once
-curl -T "{index.html,style.css,script.js}" -u "$FTP_USER:$FTP_PASSWORD" "$FTP_URL"
+curl -T "{index.html,style.css,script.js,favicon.ico}" -u "$FTP_USER:$FTP_PASSWORD" "$FTP_URL"
 ```
