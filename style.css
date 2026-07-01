@@ -309,12 +309,12 @@ a:focus-visible {
 /* ----- Hero Section ----- */
 .hero {
     position: relative;
-    min-height: 100vh;
+    min-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 7rem 0 4rem;
+    padding: 7rem 0 2rem;
     overflow: hidden;
 }
 
@@ -431,7 +431,7 @@ a:focus-visible {
     flex-wrap: wrap;
     gap: var(--gap-sm);
     justify-content: center;
-    margin-bottom: 10rem;
+    margin-bottom: 5rem;
     opacity: 0;
     animation: fadeSlideUp 0.8s var(--ease-out) 0.9s forwards;
 }
@@ -1303,7 +1303,8 @@ a:focus-visible {
 
     /* Mobile hero */
     .hero {
-        padding: 6rem 0 3rem;
+        min-height: auto;
+        padding: 5rem 0 2rem;
     }
 
     .hero-avatar-wrapper {
@@ -1324,6 +1325,7 @@ a:focus-visible {
     .hero-cta {
         flex-direction: column;
         align-items: center;
+        margin-bottom: 0;
     }
 
     .btn {
