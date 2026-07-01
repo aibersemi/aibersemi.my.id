@@ -22,6 +22,8 @@ To run this static website project locally, use the provided `server.sh` script.
 
 ## Deployment (Upload to Hosting)
 
+> **WARNING:** Execute this only if explicitly requested for publication. Do not execute automatically.
+
 Changes to `index.html`, `style.css`, `script.js`, or `favicon.ico` **must be uploaded** manually for the updates to appear on the *live server* (https://aibersemi.my.id/).
 
 Use `curl` to upload (overwrite) files through FTP. Credentials can be found in the `.env` file.
