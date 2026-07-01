@@ -41,7 +41,7 @@
     /* Spacing */
     --container-max: 1200px;
     --header-height: 70px;
-    --anchor-offset: calc(var(--header-height) + 1.75rem);
+    --anchor-offset: calc(var(--header-height) - 0.25rem);
     --section-padding: 4rem 0;
     --gap-sm: 0.75rem;
     --gap-md: 1.5rem;
