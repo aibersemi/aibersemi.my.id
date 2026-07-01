@@ -331,15 +331,14 @@
                         Example: Email, LinkedIn, Twitter/X, or a contact form with a backend.
                         Do not add a real working form without backend validation and CSRF protection.
                     -->
-                    <div class="contact-card contact-card-placeholder" id="contact-email">
+                    <a href="mailto:admin@aibersemi.my.id" class="contact-card" id="contact-email">
                         <div class="contact-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/></svg>
                         </div>
                         <h3 class="contact-title">Email</h3>
                         <p class="contact-desc">For professional inquiries</p>
-                        <!-- TODO: Replace with real email address -->
-                        <span class="contact-link-text">Available upon request</span>
-                    </div>
+                        <span class="contact-link-text">admin@aibersemi.my.id</span>
+                    </a>
                 </div>
             </div>
         </section>
@@ -358,7 +357,8 @@
                     <span class="footer-separator" aria-hidden="true">•</span>
                     <a href="https://open-vsx.org/namespace/aibersemi" target="_blank" rel="noopener noreferrer" class="footer-link" aria-label="Open VSX namespace">Open VSX</a>
                 </div>
-                <p class="footer-copy">&copy; 2025 AiBersemi. All rights reserved.</p>
+                <p class="footer-copy">&copy; <span id="copyright-year"></span> AiBersemi. All rights reserved.</p>
+                <script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
             </div>
         </div>
     </footer>
