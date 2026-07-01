@@ -35,9 +35,37 @@
         { name: 'Workflow Optimization', icon: '📊' },
     ];
 
+    const PROFILE_CONFIG = {
+        githubUsername: 'aibersemi',
+        openVsxNamespace: 'aibersemi',
+        cacheTtlMs: 1000 * 60 * 30,
+        projectLimit: 6,
+        extensionLimit: 6,
+    };
+
+    const API_CACHE_KEYS = {
+        projects: 'aibersemi.github-projects.v1',
+        extensions: 'aibersemi.open-vsx-extensions.v1',
+    };
+
+    const LANGUAGE_COLORS = {
+        JavaScript: '#f1e05a',
+        TypeScript: '#3178c6',
+        Python: '#3572a5',
+        Shell: '#89e051',
+        HTML: '#e34c26',
+        CSS: '#563d7c',
+        Vue: '#41b883',
+        Svelte: '#ff3e00',
+        PHP: '#4f5d95',
+        Go: '#00add8',
+        Rust: '#dea584',
+        Java: '#b07219',
+    };
+
     /**
      * GitHub project data — sourced from the AiBersemi GitHub API.
-     * TODO: Add more projects here as new repositories are created.
+     * Used as fallback when the API is unavailable.
      */
     const PROJECTS = [
         {
@@ -48,20 +76,11 @@
             languageColor: '#f1e05a',
             url: 'https://github.com/aibersemi/open-quota-antigravity',
         },
-        // TODO: Add more repositories here as they become public.
-        // Example format:
-        // {
-        //     name: 'repo-name',
-        //     description: 'Short description of the repository.',
-        //     language: 'TypeScript',
-        //     languageColor: '#3178c6',
-        //     url: 'https://github.com/aibersemi/repo-name',
-        // },
     ];
 
     /**
      * Open VSX extensions — sourced from the Open VSX API.
-     * TODO: Add more extensions here as they are published.
+     * Used as fallback when the API is unavailable.
      */
     const EXTENSIONS = [
         {
@@ -73,16 +92,6 @@
             publisher: 'aibersemi',
             url: 'https://open-vsx.org/extension/aibersemi/open-quota-antigravity',
         },
-        // TODO: Add more extensions here as they are published.
-        // Example format:
-        // {
-        //     name: 'Extension Display Name',
-        //     slug: 'extension-slug',
-        //     description: 'Brief description of the extension.',
-        //     version: '1.0.0',
-        //     publisher: 'aibersemi',
-        //     url: 'https://open-vsx.org/extension/aibersemi/extension-slug',
-        // },
     ];
 
     /**
@@ -446,6 +455,180 @@
        Uses document.createElement / textContent for security.
        ========================================================== */
 
+    function getGitHubProjectsApiUrl() {
+        return (
+            'https://api.github.com/users/' +
+            encodeURIComponent(PROFILE_CONFIG.githubUsername) +
+            '/repos?type=owner&sort=pushed&direction=desc&per_page=100'
+        );
+    }
+
+    function getOpenVsxNamespaceApiUrl() {
+        return 'https://open-vsx.org/api/' + encodeURIComponent(PROFILE_CONFIG.openVsxNamespace);
+    }
+
+    function getOpenVsxExtensionUrl(namespace, extensionName) {
+        return 'https://open-vsx.org/extension/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(extensionName);
+    }
+
+    function readCachedData(key) {
+        try {
+            var raw = window.localStorage.getItem(key);
+            if (!raw) return null;
+
+            var payload = JSON.parse(raw);
+            var isFresh =
+                payload &&
+                Array.isArray(payload.data) &&
+                typeof payload.timestamp === 'number' &&
+                Date.now() - payload.timestamp < PROFILE_CONFIG.cacheTtlMs;
+
+            return isFresh ? payload.data : null;
+        } catch (err) {
+            return null;
+        }
+    }
+
+    function writeCachedData(key, data) {
+        try {
+            window.localStorage.setItem(
+                key,
+                JSON.stringify({
+                    timestamp: Date.now(),
+                    data: data,
+                })
+            );
+        } catch (err) {
+            // Cache lokal opsional; halaman tetap berjalan jika storage ditolak browser.
+        }
+    }
+
+    function getLanguageColor(language) {
+        return LANGUAGE_COLORS[language] || '#64748b';
+    }
+
+    async function fetchJson(url, options) {
+        var response = await fetch(url, options || {});
+
+        if (!response.ok) {
+            throw new Error('Request failed with status ' + response.status + ' for ' + url);
+        }
+
+        return response.json();
+    }
+
+    function normalizeGitHubRepo(repo) {
+        return {
+            name: repo.name,
+            description: repo.description || 'Public repository from the AiBersemi GitHub profile.',
+            language: repo.language || 'Repository',
+            languageColor: getLanguageColor(repo.language),
+            url: repo.html_url,
+        };
+    }
+
+    async function fetchGitHubProjects() {
+        var repos = await fetchJson(getGitHubProjectsApiUrl(), {
+            headers: {
+                Accept: 'application/vnd.github+json',
+            },
+        });
+
+        if (!Array.isArray(repos)) {
+            throw new Error('Unexpected GitHub API response');
+        }
+
+        return repos
+            .filter(function (repo) {
+                return repo && !repo.fork && !repo.archived && !repo.disabled && repo.html_url;
+            })
+            .slice(0, PROFILE_CONFIG.projectLimit)
+            .map(normalizeGitHubRepo);
+    }
+
+    function normalizeOpenVsxExtension(ext) {
+        return {
+            name: ext.displayName || ext.name,
+            slug: ext.name,
+            description: ext.description || 'Published extension from the AiBersemi Open VSX namespace.',
+            version: ext.version,
+            publisher: ext.namespaceDisplayName || ext.namespace || PROFILE_CONFIG.openVsxNamespace,
+            url: getOpenVsxExtensionUrl(ext.namespace || PROFILE_CONFIG.openVsxNamespace, ext.name),
+        };
+    }
+
+    async function fetchOpenVsxExtensions() {
+        var namespaceData = await fetchJson(getOpenVsxNamespaceApiUrl());
+        var extensionMap = namespaceData && namespaceData.extensions;
+
+        if (!extensionMap || typeof extensionMap !== 'object') {
+            throw new Error('Unexpected Open VSX namespace response');
+        }
+
+        var detailUrls = Object.keys(extensionMap).map(function (slug) {
+            return extensionMap[slug];
+        });
+
+        var details = await Promise.all(
+            detailUrls.map(function (url) {
+                return fetchJson(url);
+            })
+        );
+
+        return details
+            .filter(function (ext) {
+                return ext && ext.name;
+            })
+            .sort(function (a, b) {
+                return new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+            })
+            .slice(0, PROFILE_CONFIG.extensionLimit)
+            .map(normalizeOpenVsxExtension);
+    }
+
+    async function refreshProjectsFromApi() {
+        var cachedProjects = readCachedData(API_CACHE_KEYS.projects);
+
+        if (cachedProjects && cachedProjects.length) {
+            renderProjects(cachedProjects);
+            return;
+        }
+
+        try {
+            var liveProjects = await fetchGitHubProjects();
+            if (liveProjects.length) {
+                writeCachedData(API_CACHE_KEYS.projects, liveProjects);
+                renderProjects(liveProjects);
+            }
+        } catch (err) {
+            console.warn('Gagal mengambil data GitHub Projects:', err);
+        }
+    }
+
+    async function refreshExtensionsFromApi() {
+        var cachedExtensions = readCachedData(API_CACHE_KEYS.extensions);
+
+        if (cachedExtensions && cachedExtensions.length) {
+            renderExtensions(cachedExtensions);
+            return;
+        }
+
+        try {
+            var liveExtensions = await fetchOpenVsxExtensions();
+            if (liveExtensions.length) {
+                writeCachedData(API_CACHE_KEYS.extensions, liveExtensions);
+                renderExtensions(liveExtensions);
+            }
+        } catch (err) {
+            console.warn('Gagal mengambil data Open VSX Extensions:', err);
+        }
+    }
+
+    function refreshPortfolioData() {
+        refreshProjectsFromApi();
+        refreshExtensionsFromApi();
+    }
+
     /**
      * Render skill cards into the .skills-grid container.
      */
@@ -497,11 +680,14 @@
     /**
      * Render project cards into the #projects-grid container.
      */
-    function renderProjects() {
+    function renderProjects(projects) {
         var grid = document.getElementById('projects-grid');
         if (!grid) return;
 
-        PROJECTS.forEach(function (project) {
+        var projectItems = Array.isArray(projects) && projects.length ? projects : PROJECTS;
+        grid.replaceChildren();
+
+        projectItems.forEach(function (project) {
             var card = document.createElement('a');
             card.className = 'project-card';
             card.href = project.url;
@@ -561,11 +747,14 @@
     /**
      * Render extension cards into the #extensions-grid container.
      */
-    function renderExtensions() {
+    function renderExtensions(extensions) {
         var grid = document.getElementById('extensions-grid');
         if (!grid) return;
 
-        EXTENSIONS.forEach(function (ext) {
+        var extensionItems = Array.isArray(extensions) && extensions.length ? extensions : EXTENSIONS;
+        grid.replaceChildren();
+
+        extensionItems.forEach(function (ext) {
             var card = document.createElement('a');
             card.className = 'extension-card';
             card.href = ext.url;
@@ -581,6 +770,7 @@
             iconWrapper.appendChild(createExtensionSVG());
 
             var textWrapper = document.createElement('div');
+            textWrapper.className = 'extension-card-text';
 
             var name = document.createElement('h3');
             name.className = 'extension-card-name';
@@ -604,15 +794,17 @@
             var footer = document.createElement('div');
             footer.className = 'extension-card-footer';
 
-            var version = document.createElement('span');
-            version.className = 'extension-version';
-            version.textContent = 'v' + ext.version;
+            if (ext.version) {
+                var version = document.createElement('span');
+                version.className = 'extension-version';
+                version.textContent = 'v' + ext.version;
+                footer.appendChild(version);
+            }
 
             var linkText = document.createElement('span');
             linkText.className = 'extension-card-link';
             linkText.textContent = 'View on Open VSX →';
 
-            footer.appendChild(version);
             footer.appendChild(linkText);
 
             card.appendChild(header);
@@ -703,6 +895,7 @@
         renderSkills();
         renderProjects();
         renderExtensions();
+        refreshPortfolioData();
         renderServices();
         renderHighlights();
 
