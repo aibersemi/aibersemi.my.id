@@ -15,3 +15,23 @@ python3 -m http.server 8099
 ```
 - Server akan berjalan di `http://localhost:8099`
 - Untuk menghentikan server saat dijalankan di terminal, tekan `Ctrl + C`.
+
+## Deployment (Upload ke Hosting)
+
+Perubahan yang dilakukan pada file di repositori ini (komputer lokal) **harus diunggah** secara manual agar pembaruan tersebut muncul di *live server* (https://aibersemi.my.id/). 
+
+Anda dapat menggunakan `curl` untuk mengunggah (menimpa) file melalui FTP. Kredensial dapat dilihat pada file `.env`.
+
+**Contoh Perintah Upload (Otomatis mengambil data dari `.env`):**
+```bash
+# Mengambil variabel dari file .env secara aman
+FTP_USER=$(grep -Po '^FTP_USER=\K.*' .env)
+FTP_PASSWORD=$(grep -Po '^FTP_PASSWORD=\K.*' .env)
+FTP_URL=$(grep -Po '^FTP_URL=\K.*' .env)
+
+# Upload satu file
+curl -T script.js -u "$FTP_USER:$FTP_PASSWORD" "$FTP_URL"
+
+# Upload beberapa file sekaligus
+curl -T "{index.html,style.css,script.js}" -u "$FTP_USER:$FTP_PASSWORD" "$FTP_URL"
+```
