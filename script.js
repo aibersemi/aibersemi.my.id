@@ -229,13 +229,19 @@
      * Typing effect phrases for the hero subtitle.
      */
     const TYPING_PHRASES = [
-        'IT Systems Specialist',
+        'IT Professional',
         'Software Developer',
-        'Automation Specialist',
-        'Web Development Practitioner',
+        'Automation Practitioner',
+        'Web Development',
         'API Integration Builder',
-        'AI Workflow Implementer',
-        'DevOps & Deployment Practitioner',
+        'AI Workflow Builder',
+        'DevOps & Deployment',
+        'Extension Developer',
+        'Tool Builder',
+        'Network & Infrastructure',
+        'VPS Deployment & Configuration',
+        'Email Server Builder',
+        'Open Source Contributor',
     ];
 
 
