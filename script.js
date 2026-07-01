@@ -303,8 +303,7 @@
         function drawParticles() {
             ctx.clearRect(0, 0, width, height);
 
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
+            particles.forEach(function (p, i) {
 
                 // Move
                 p.x += p.vx;
@@ -323,8 +322,9 @@
                 ctx.fill();
 
                 // Draw connections to nearby particles
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j];
+                particles.forEach(function (p2, j) {
+                    if (j <= i) return;
+
                     const dx = p.x - p2.x;
                     const dy = p.y - p2.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
@@ -338,8 +338,8 @@
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     }
-                }
-            }
+                });
+            });
 
             animationFrameId = requestAnimationFrame(drawParticles);
         }
@@ -534,6 +534,13 @@
         return 'https://open-vsx.org/extension/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(extensionName);
     }
 
+    function getOwnMapValue(map, key) {
+        if (!map || typeof key !== 'string') return undefined;
+
+        var descriptor = Object.getOwnPropertyDescriptor(map, key);
+        return descriptor ? descriptor.value : undefined;
+    }
+
     function readCachedData(key) {
         try {
             var raw = window.localStorage.getItem(key);
@@ -567,7 +574,7 @@
     }
 
     function getLanguageColor(language) {
-        return LANGUAGE_COLORS[language] || '#64748b';
+        return getOwnMapValue(LANGUAGE_COLORS, language) || '#64748b';
     }
 
     function getLanguageClass(language) {
@@ -591,7 +598,7 @@
     }
 
     function normalizeGitHubRepo(repo) {
-        var display = PROJECT_DISPLAY_OVERRIDES[repo.name] || {};
+        var display = getOwnMapValue(PROJECT_DISPLAY_OVERRIDES, repo.name) || {};
 
         return {
             name: display.name || repo.name,
@@ -625,7 +632,7 @@
     }
 
     function normalizeOpenVsxExtension(ext) {
-        var display = EXTENSION_DISPLAY_OVERRIDES[ext.name] || {};
+        var display = getOwnMapValue(EXTENSION_DISPLAY_OVERRIDES, ext.name) || {};
 
         return {
             name: display.name || ext.displayName || ext.name,
@@ -648,8 +655,8 @@
             throw new Error('Unexpected Open VSX namespace response');
         }
 
-        var detailUrls = Object.keys(extensionMap).map(function (slug) {
-            return extensionMap[slug];
+        var detailUrls = Object.values(extensionMap).filter(function (url) {
+            return typeof url === 'string' && url;
         });
 
         var details = await Promise.all(
