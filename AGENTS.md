@@ -21,9 +21,9 @@ python3 -m http.server 8099
 
 ## Deployment (Upload ke Hosting)
 
-Perubahan yang dilakukan pada file di repositori ini (komputer lokal) **harus diunggah** secara manual agar pembaruan tersebut muncul di *live server* (https://aibersemi.my.id/). 
+Perubahan yang dilakukan pada file di repositori ini (lokal) **harus diunggah** secara manual agar pembaruan tersebut muncul di *live server* (https://aibersemi.my.id/). 
 
-Anda dapat menggunakan `curl` untuk mengunggah (menimpa) file melalui FTP. Kredensial dapat dilihat pada file `.env`.
+Gunakan `curl` untuk mengunggah (menimpa) file melalui FTP. Kredensial dapat dilihat pada file `.env`.
 
 **Contoh Perintah Upload (Otomatis mengambil data dari `.env`):**
 ```bash
