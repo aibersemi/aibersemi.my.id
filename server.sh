@@ -4,46 +4,46 @@ PORT=8099
 
 function start_server() {
     if [ -f server.pid ] && ps -p $(cat server.pid) > /dev/null 2>&1; then
-        echo "Server sudah berjalan dengan PID $(cat server.pid)."
+        echo "Server is already running with PID $(cat server.pid)."
         exit 1
     fi
 
-    echo "Memulai server di http://localhost:$PORT..."
+    echo "Starting server at http://localhost:$PORT..."
     nohup python3 -m http.server $PORT > server.log 2>&1 &
     PID=$!
     echo $PID > server.pid
-    echo "Server berjalan di background (PID: $PID)."
-    echo "Log dapat dilihat di file server.log."
+    echo "Server is running in the background (PID: $PID)."
+    echo "Logs are available in the server.log file."
 }
 
 function stop_server() {
     if [ -f server.pid ]; then
         PID=$(cat server.pid)
         if ps -p $PID > /dev/null 2>&1; then
-            echo "Menghentikan server dengan PID $PID..."
+            echo "Stopping server with PID $PID..."
             kill $PID
-            echo "Server berhasil dihentikan."
+            echo "Server stopped successfully."
         else
-            echo "Server dengan PID $PID tidak sedang berjalan."
+            echo "Server with PID $PID is not running."
         fi
         rm server.pid
     else
-        echo "File server.pid tidak ditemukan."
-        echo "Mencoba menghentikan proses Python HTTP Server secara manual..."
+        echo "server.pid file was not found."
+        echo "Trying to stop the Python HTTP Server process manually..."
         if pkill -f "python3 -m http.server $PORT"; then
-            echo "Server di port $PORT berhasil dihentikan."
+            echo "Server on port $PORT stopped successfully."
         else
-            echo "Tidak ada server yang berjalan di port $PORT."
+            echo "No server is running on port $PORT."
         fi
     fi
 }
 
 function show_help() {
-    echo "Penggunaan: $0 [opsi]"
-    echo "Opsi:"
-    echo "  -r, --run    Menjalankan server web lokal di background"
-    echo "  -s, --stop   Menghentikan server web lokal"
-    echo "  -h, --help   Menampilkan bantuan ini"
+    echo "Usage: $0 [option]"
+    echo "Options:"
+    echo "  -r, --run    Run the local web server in the background"
+    echo "  -s, --stop   Stop the local web server"
+    echo "  -h, --help   Show this help message"
 }
 
 if [ $# -eq 0 ]; then
@@ -62,7 +62,7 @@ case "$1" in
         show_help
         ;;
     *)
-        echo "Opsi tidak valid: $1"
+        echo "Invalid option: $1"
         show_help
         exit 1
         ;;
