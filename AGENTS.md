@@ -22,7 +22,7 @@ Untuk menjalankan project website statis ini secara lokal, Anda dapat menggunaka
 
 ## Deployment (Upload to Hosting)
 
-Perubahan pada file: index.html,style.css atau script.js; **harus diunggah** secara manual agar pembaruan tersebut muncul di *live server* (https://aibersemi.my.id/). 
+Perubahan pada file: index.html, style.css, script.js atau favicon.ico; **harus diunggah** secara manual agar pembaruan tersebut muncul di *live server* (https://aibersemi.my.id/). 
 
 Gunakan `curl` untuk mengunggah (menimpa) file melalui FTP. Kredensial dapat dilihat pada file `.env`.
 
