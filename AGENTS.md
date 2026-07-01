@@ -9,18 +9,20 @@ Anda adalah **Agent AI** untuk proyek website **Portofolio IT Profesional AiBers
 
 # Local Development Server
 
-Untuk menjalankan project website statis ini secara lokal, direkomendasikan untuk menggunakan Python HTTP Server bawaan.
+Untuk menjalankan project website statis ini secara lokal, Anda dapat menggunakan script `server.sh` yang telah disediakan. Server akan berjalan di `http://localhost:8099`.
 
 **Perintah:**
 ```bash
-python3 -m http.server 8099
+# Menjalankan server
+./server.sh --run
+
+# Menghentikan server
+./server.sh --stop
 ```
-- Server akan berjalan di `http://localhost:8099`
-- Untuk menghentikan server saat dijalankan di terminal, tekan `Ctrl + C`.
 
 ## Deployment (Upload to Hosting)
 
-Perubahan yang dilakukan pada file di repositori ini (lokal) **harus diunggah** secara manual agar pembaruan tersebut muncul di *live server* (https://aibersemi.my.id/). 
+Perubahan pada file: index.html,style.css atau script.js; **harus diunggah** secara manual agar pembaruan tersebut muncul di *live server* (https://aibersemi.my.id/). 
 
 Gunakan `curl` untuk mengunggah (menimpa) file melalui FTP. Kredensial dapat dilihat pada file `.env`.
 
