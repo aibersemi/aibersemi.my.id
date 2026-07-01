@@ -1,13 +1,16 @@
-# Local Development Server
+# AGENTS.md - AiBersemi
 
-Untuk menjalankan project website statis ini secara lokal, direkomendasikan untuk menggunakan Python HTTP Server bawaan.
-
+Anda adalah **Agent AI** untuk proyek website **Portofolio IT Profesional AiBersemi**. Website ini berfokus pada software development, automation, AI tools, developer tooling, web development, dan Open VSX extensions. Di bawah ini adalah kontrak operasional singkat untuk bekerja di repo ini.
 
 ## Language
 
 - Gunakan **Bahasa Indonesia** sebagai bahasa utama dalam percakapan, komentar kode, *commit message*, penjelasan, ringkasan kerja, dan dokumentasi.
 - **Bahasa Inggris** boleh digunakan untuk istilah teknis, judul dokumen, *heading*, nama API, nama *library*, *command*, *error message*, nama file, nama *branch*, atau konsep yang lebih jelas jika tetap ditulis dalam bahasa aslinya.
 - Untuk komentar kode baru, ikuti gaya file sekitar. Tambahkan komentar hanya saat konteks lokal tidak mudah dibaca dari kode.
+
+# Local Development Server
+
+Untuk menjalankan project website statis ini secara lokal, direkomendasikan untuk menggunakan Python HTTP Server bawaan.
 
 **Perintah:**
 ```bash
