@@ -863,6 +863,55 @@ a:focus-visible {
     height: 8px;
     border-radius: var(--radius-full);
     flex-shrink: 0;
+    background: #64748b;
+}
+
+.meta-dot.language-javascript {
+    background: #f1e05a;
+}
+
+.meta-dot.language-typescript {
+    background: #3178c6;
+}
+
+.meta-dot.language-python {
+    background: #3572a5;
+}
+
+.meta-dot.language-shell {
+    background: #89e051;
+}
+
+.meta-dot.language-html {
+    background: #e34c26;
+}
+
+.meta-dot.language-css {
+    background: #563d7c;
+}
+
+.meta-dot.language-vue {
+    background: #41b883;
+}
+
+.meta-dot.language-svelte {
+    background: #ff3e00;
+}
+
+.meta-dot.language-php {
+    background: #4f5d95;
+}
+
+.meta-dot.language-go {
+    background: #00add8;
+}
+
+.meta-dot.language-rust {
+    background: #dea584;
+}
+
+.meta-dot.language-java {
+    background: #b07219;
 }
 
 .project-card-link {

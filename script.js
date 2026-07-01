@@ -570,6 +570,16 @@
         return LANGUAGE_COLORS[language] || '#64748b';
     }
 
+    function getLanguageClass(language) {
+        return (
+            'language-' +
+            String(language || 'default')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+        );
+    }
+
     async function fetchJson(url, options) {
         var response = await fetch(url, options || {});
 
@@ -796,8 +806,7 @@
                 tag.className = 'project-meta-tag';
 
                 var dot = document.createElement('span');
-                dot.className = 'meta-dot';
-                dot.style.backgroundColor = project.languageColor || '#64748b';
+                dot.className = 'meta-dot ' + getLanguageClass(project.language);
 
                 tag.appendChild(dot);
                 var langText = document.createTextNode(project.language);
@@ -963,6 +972,11 @@
         initParticles();
         initTypingEffect();
         initNavigation();
+
+        var copyrightYear = document.getElementById('copyright-year');
+        if (copyrightYear) {
+            copyrightYear.textContent = new Date().getFullYear();
+        }
 
         // Render dynamic content using secure DOM methods
         renderSkills();
