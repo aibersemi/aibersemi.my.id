@@ -32,6 +32,8 @@
         { name: 'Deployment', icon: '🚀' },
         { name: 'DevOps Workflow', icon: '🛠️' },
         { name: 'Developer Tools', icon: '🧩' },
+        { name: 'VS Code Extensions', icon: '🧩' },
+        { name: 'Open VSX Publishing', icon: '📦' },
     ];
 
     const PROFILE_CONFIG = {
