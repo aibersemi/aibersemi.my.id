@@ -63,12 +63,12 @@ function main() {
         /<button\b(?=[^>]*\bid\s*=\s*["']contact-email["'])(?=[^>]*\btype\s*=\s*["']button["'])[^>]*>/i,
         'The email contact card must be a button'
     );
-    assert.ok(indexHtml.includes('Open your email app'), 'The email contact card must keep its CTA text');
+    assert.ok(indexHtml.includes('admin@aibersemi.my.id'), 'The email contact card must display the email address');
 
     const fullAddress = ['adm', 'in'].join('') + '@' + ['aiber', 'semi'].join('') + '.' + ['my', 'id'].join('.');
     const mailScheme = ['mail', 'to'].join('') + ':';
 
-    assert.ok(!indexHtml.includes(fullAddress), 'index.html must not expose the full email address');
+    assert.ok(indexHtml.includes(fullAddress), 'index.html must expose the email address in the contact card');
     assert.ok(!indexHtml.toLowerCase().includes(mailScheme), 'index.html must not contain a mailto link');
     assert.ok(!scriptSource.includes(fullAddress), 'script.js must compose, not store, the full email address');
     assert.match(
