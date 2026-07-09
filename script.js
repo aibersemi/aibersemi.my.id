@@ -594,7 +594,25 @@
             throw new Error('Request failed with status ' + response.status + ' for ' + url);
         }
 
+        var contentType = response.headers.get('content-type') || '';
+        if (!contentType.toLowerCase().includes('application/json')) {
+            throw new Error(
+                'Expected a JSON response for ' + url + ', received ' + (contentType || 'no Content-Type header')
+            );
+        }
+
         return response.json();
+    }
+
+    function initEmailContact() {
+        var emailButton = document.getElementById('contact-email');
+        if (!emailButton) return;
+
+        emailButton.addEventListener('click', function () {
+            var localPart = 'admin';
+            var domain = ['aibersemi', 'my', 'id'].join('.');
+            window.location.href = 'mailto:' + localPart + '@' + domain;
+        });
     }
 
     function normalizeGitHubRepo(repo) {
@@ -979,6 +997,7 @@
         initParticles();
         initTypingEffect();
         initNavigation();
+        initEmailContact();
 
         var copyrightYear = document.getElementById('copyright-year');
         if (copyrightYear) {

@@ -8,21 +8,50 @@ const vm = require('vm');
 const projectRoot = path.resolve(__dirname, '..');
 const scriptPath = path.join(projectRoot, 'script.js');
 
-function jsonResponse(data) {
+function jsonResponse(data, options) {
+    options = options || {};
+
     return {
         ok: true,
         status: 200,
+        headers: {
+            get: function (name) {
+                return String(name).toLowerCase() === 'content-type'
+                    ? options.contentType === undefined
+                        ? 'application/json; charset=utf-8'
+                        : options.contentType
+                    : null;
+            },
+        },
         json: async function () {
             return data;
         },
     };
 }
 
-function loadScript(fetchImpl) {
+function createMockButton() {
+    var clickHandler;
+
+    return {
+        addEventListener: function (eventName, handler) {
+            if (eventName === 'click') {
+                clickHandler = handler;
+            }
+        },
+        click: function () {
+            assert.strictEqual(typeof clickHandler, 'function', 'Email button must register a click handler');
+            clickHandler({ type: 'click', currentTarget: this });
+        },
+    };
+}
+
+function loadScript(fetchImpl, options) {
+    options = options || {};
+
     const source = fs.readFileSync(scriptPath, 'utf8');
     const script = source.replace(
         /\n\}\)\(\);\s*$/,
-        '\nglobalThis.__testApi = { getLanguageColor, normalizeGitHubRepo, normalizeOpenVsxExtension, fetchOpenVsxExtensions };\n})();'
+        '\nglobalThis.__testApi = { getLanguageColor, normalizeGitHubRepo, normalizeOpenVsxExtension, fetchJson, fetchOpenVsxExtensions, initEmailContact };\n})();'
     );
 
     assert.notStrictEqual(script, source, 'Unable to expose script internals for tests');
@@ -41,7 +70,11 @@ function loadScript(fetchImpl) {
         document: {
             readyState: 'loading',
             addEventListener: function () {},
-            getElementById: function () {
+            getElementById: function (id) {
+                if (id === 'contact-email') {
+                    return options.emailButton || null;
+                }
+
                 return null;
             },
             querySelector: function () {
@@ -55,6 +88,7 @@ function loadScript(fetchImpl) {
             addEventListener: function () {},
             innerWidth: 1024,
             innerHeight: 768,
+            location: options.location || { href: '' },
             localStorage: {
                 getItem: function () {
                     return null;
@@ -68,7 +102,75 @@ function loadScript(fetchImpl) {
     return sandbox.__testApi;
 }
 
+async function assertFetchJsonRejectsNonJson(contentType) {
+    var jsonWasCalled = false;
+    var api = loadScript(async function () {
+        return {
+            ok: true,
+            status: 200,
+            headers: {
+                get: function (name) {
+                    return String(name).toLowerCase() === 'content-type' ? contentType : null;
+                },
+            },
+            json: async function () {
+                jsonWasCalled = true;
+                return {};
+            },
+        };
+    });
+
+    await assert.rejects(
+        api.fetchJson('https://example.test/non-json'),
+        function (err) {
+            return /json|content-type/i.test(String(err && err.message));
+        },
+        'fetchJson must reject a response without a JSON content type'
+    );
+    assert.strictEqual(jsonWasCalled, false, 'fetchJson must not parse a non-JSON response');
+}
+
+async function testFetchJsonContentTypes() {
+    var payload = { result: 'valid-json' };
+    var api = loadScript(async function () {
+        return jsonResponse(payload);
+    });
+
+    assert.strictEqual(
+        await api.fetchJson('https://example.test/valid-json'),
+        payload,
+        'fetchJson must parse responses whose Content-Type is JSON'
+    );
+
+    await assertFetchJsonRejectsNonJson('text/html; charset=utf-8');
+    await assertFetchJsonRejectsNonJson('');
+}
+
+function testEmailContactActivation() {
+    var emailButton = createMockButton();
+    var location = { href: '' };
+    var api = loadScript(
+        async function () {
+            return jsonResponse({});
+        },
+        { emailButton: emailButton, location: location }
+    );
+
+    api.initEmailContact();
+    assert.strictEqual(location.href, '', 'Email destination must not be set before activation');
+
+    emailButton.click();
+
+    var localPart = ['adm', 'in'].join('');
+    var domain = ['ai', 'bersemi', '.my', '.id'].join('');
+    var mailtoPrefix = ['mail', 'to:'].join('');
+    assert.strictEqual(location.href, mailtoPrefix + localPart + '@' + domain);
+}
+
 async function main() {
+    await testFetchJsonContentTypes();
+    testEmailContactActivation();
+
     const requestedUrls = [];
     const api = loadScript(async function (url) {
         requestedUrls.push(url);

@@ -1174,6 +1174,19 @@ a:focus-visible {
     text-decoration: none;
 }
 
+button.contact-card {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    appearance: none;
+}
+
+.contact-card:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
 .contact-card:hover {
     border-color: var(--color-border-hover);
     transform: translateY(-6px);
@@ -1208,6 +1221,7 @@ a:focus-visible {
 }
 
 .contact-title {
+    display: block;
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--color-text-heading);
@@ -1215,6 +1229,7 @@ a:focus-visible {
 }
 
 .contact-desc {
+    display: block;
     color: var(--color-text-secondary);
     font-size: 0.9rem;
     margin-bottom: 1rem;
