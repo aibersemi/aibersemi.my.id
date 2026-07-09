@@ -9,7 +9,7 @@ function start_server() {
     fi
 
     echo "Starting server at http://localhost:$PORT..."
-    nohup python3 -m http.server $PORT > server.log 2>&1 &
+    nohup python3 -m http.server --bind 127.0.0.1 "$PORT" > server.log 2>&1 &
     PID=$!
     echo $PID > server.pid
     echo "Server is running in the background (PID: $PID)."
